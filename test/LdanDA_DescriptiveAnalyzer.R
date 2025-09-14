@@ -17,7 +17,6 @@
 library(R6)
 library(dplyr)
 library(moments)
-# install.packages("moments") # Si no está instalado
 
 LdanDA_DescriptiveAnalyzer <- R6Class("LdanDA_DescriptiveAnalyzer",
   inherit = LdanDA_Analyzer, # hereda de LdanDA_Analyzer
@@ -41,22 +40,21 @@ LdanDA_DescriptiveAnalyzer <- R6Class("LdanDA_DescriptiveAnalyzer",
       # Acceder a los datos desde la clase padre
       df <- super$.__enclos_env__$private$.data
       
-      # 0. Validaciones y preparación
-      # cambia esto para usar el metodo de la clase padre ".validate_data"
-      if (!is.data.frame(df)) {
-        stop("El objeto de datos debe ser un data.frame.")
-      }
+      # 0. Preparación
+      # La validación de datos ya fue realizada por el método pipeline de la clase padre.
       
-      # Excluir columnas si se especifica
+      # excluir columnas si se especifica
       if (!is.null(private$.exclude_cols)) {
         df <- df[, !(names(df) %in% private$.exclude_cols)]
       }
       
       # Identificar tipos de columnas
+      # names() -> nombres de columnas
+      # sapply() -> aplicar función a cada columna y retorna un vector o matriz
       numeric_cols <- names(df)[sapply(df, is.numeric)]
       categorical_cols <- names(df)[sapply(df, function(x) is.factor(x) || is.character(x))]
       
-      # Crear la lista de resultados
+      # lista de resultados
       analysis_results <- list()
       
       # --- 1. RESUMEN GLOBAL ---
@@ -67,41 +65,44 @@ LdanDA_DescriptiveAnalyzer <- R6Class("LdanDA_DescriptiveAnalyzer",
         memory_usage = object.size(df),
         variable_types = table(sapply(df, class)),
         total_nas = sum(is.na(df)),
-        nas_per_column = colSums(is.na(df)),
+        nas_per_column = colSums(is.na(df)), # colSums() suma por columnas
         duplicated_rows = sum(duplicated(df))
       )
       
-      # --- 2. ANÁLISIS UNIVARIADO ---
+      # --- 2. ANALISIS UNIVARIADO ---
+      # análisis de una única variable a la vez para entender su distribución
       
-      # Análisis numérico
+      # Análisis numerico
+      # lapply -> aplica función a cada columna y retorna una lista
       numeric_summary <- lapply(df[numeric_cols], function(col) {
         if(sum(!is.na(col)) == 0) return(NULL) # Si toda la columna es NA
         list(
-          mean = mean(col, na.rm = TRUE),
+          mean = mean(col, na.rm = TRUE), # na.rm = TRUE para ignorar NAs
           median = median(col, na.rm = TRUE),
           sd = sd(col, na.rm = TRUE),
           min = min(col, na.rm = TRUE),
           max = max(col, na.rm = TRUE),
           quantiles = quantile(col, na.rm = TRUE),
-          skewness = moments::skewness(col, na.rm = TRUE),
+          skewness = moments::skewness(col, na.rm = TRUE), # asimetria
           kurtosis = moments::kurtosis(col, na.rm = TRUE),
-          n_unique = length(unique(col)),
+          n_unique = length(unique(col)), # cardinalidad: valores únicos
           n_zeros = sum(col == 0, na.rm = TRUE)
         )
       })
       
-      # Análisis categórico
+      # Analisis categorico
       categorical_summary <- lapply(df[categorical_cols], function(col) {
         if(sum(!is.na(col)) == 0) return(NULL)
-        freq_table <- as.data.frame(sort(table(col), decreasing = TRUE))
-        names(freq_table) <- c("Category", "Frequency")
-        freq_table$Percentage <- freq_table$Frequency / sum(freq_table$Frequency)
+        freq_table <- as.data.frame(sort(table(col), decreasing = TRUE)) # tabla de frecuencias
+        names(freq_table) <- c("Category", "Frequency") # renombrar columnas
+        freq_table$Percentage <- freq_table$Frequency / sum(freq_table$Frequency) # porcentaje de cada categoria
         
         list(
-          cardinality = length(unique(col)),
-          mode = freq_table$Category[1],
+          cardinality = length(unique(col)), # valores únicos
+          mode = freq_table$Category[1], 
           frequency_table = freq_table
         )
+        
       })
       
       analysis_results$univariate_analysis <- list(
@@ -110,6 +111,7 @@ LdanDA_DescriptiveAnalyzer <- R6Class("LdanDA_DescriptiveAnalyzer",
       )
       
       # --- 3. ANÁLISIS BIVARIADO ---
+      # análisis de dos variables a la vez para entender relaciones
       
       # Matriz de Correlación (solo si hay al menos 2 columnas numéricas)
       correlation_matrix <- NULL
@@ -117,7 +119,7 @@ LdanDA_DescriptiveAnalyzer <- R6Class("LdanDA_DescriptiveAnalyzer",
         correlation_matrix <- cor(df[numeric_cols], use = "pairwise.complete.obs")
       }
       
-      # Estadísticas agrupadas si se define target_variable
+      # Estadisticas agrupadas si se define target_variable
       grouped_stats <- NULL
       if (!is.null(private$.target_variable) && private$.target_variable %in% categorical_cols) {
         grouped_stats <- df %>%
