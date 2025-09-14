@@ -1,4 +1,5 @@
-# ui.R
+# renv::init()
+# snapshot() -> renv::snapshot()
 # install.packages("DT")
 library(shiny)
 library(DT) # Necesaria para las tablas interactivas
