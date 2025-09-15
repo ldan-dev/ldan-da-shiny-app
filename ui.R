@@ -46,6 +46,9 @@ fluidPage(
       
       hr(), # Otra línea separadora
       
+      # textInput("param1", "Parameter 1:", value = "Default1"), # param1 se enviará al server
+      # renderText({ input$param1 }) # mostrar el valor de param1 (depuracion)
+
       # Opciones que aparecerán solo si se elige "Regression Analysis"
       conditionalPanel(
         condition = "input.analysis_type == 'Regression Analysis'",
@@ -59,6 +62,8 @@ fluidPage(
       actionButton("run_button", "Run Analysis", icon = icon("play"))
       
     ),
+
+    # verbatimTextOutput() # mostrar texto sin formato (depuracion)
     
     # --- Panel Principal con los Resultados ---
     mainPanel(

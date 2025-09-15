@@ -1,5 +1,26 @@
 # LDAN-DA: Herramienta de Análisis de Datos Interactivo
 
+<!-- 
+TODO:
+
+implementar metodo abstracto "plot_data()" en la clase padre LdanDA_Analyzer y definir su comportamiento en las clases hijas
+modificar el comportamiento de "analyze_data()" para que siga el framework de trabajo  CRISP-ML:
+Fase 1. Comprensión de datos y objetivos del negocio
+
+Capitulo 1. Comprensión del negocio
+1.1 Conceptos básicos de comprensión comercial
+1.2 Determinación de los objetivos comerciales
+1.3 Evaluación de la situación
+1.4 Determinación de los objetivos de machine Learning # no es aplicable en este proyecto
+1.5 Produccion del Plan del Proyecto
+Capitulo 2. Compresión de los datos
+2.1 Conceptos básicos sobre comprensión de datos
+2.2 Recopilación de datos iniciales
+2.3 Descripción de los datos
+2.4 Exploración de datos
+2.5 Verificación de Calidad de los datos
+ -->
+
 [![Shiny App](https://img.shields.io/badge/shiny-app-blue.svg)](https://github.com/ldan-dev/ldan-da-shiny-app)
 
 Una aplicación web interactiva desarrollada en **R** con el framework **Shiny** para el análisis de datos exploratorio. El proyecto demuestra la implementación de principios de **Programación Orientada a Objetos (POO)** con R6 y el uso del patrón de diseño "Template Method".
