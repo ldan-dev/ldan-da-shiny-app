@@ -4,6 +4,9 @@
 TODO:
 
 implementar metodo abstracto "plot_data()" en la clase padre LdanDA_Analyzer y definir su comportamiento en las clases hijas
+implementar metodo abstracto "explain_summary()" en la clase padre LdanDA_Analyzer donde se explique el resumen estadistico
+
+
 modificar el comportamiento de "analyze_data()" para que siga el framework de trabajo  CRISP-ML:
 Fase 1. Comprensión de datos y objetivos del negocio
 
@@ -19,7 +22,13 @@ Capitulo 2. Compresión de los datos
 2.3 Descripción de los datos
 2.4 Exploración de datos
 2.5 Verificación de Calidad de los datos
+
+
+notas:
+recordar explicar todo sobre regresiones, (p-value, r-cuadrada, adjusted r-cuadrada, f-statistic, etc), grafico de q-q, etc
  -->
+
+
 
 [![Shiny App](https://img.shields.io/badge/shiny-app-blue.svg)](https://github.com/ldan-dev/ldan-da-shiny-app)
 
@@ -36,7 +45,7 @@ Esta herramienta permite a los usuarios cargar su propio conjunto de datos en fo
 
 ## ✨ Características Principales
 
-* **Carga de Datos:** Soporte para archivos `.csv`.
+* **Carga de Datos:** Soporte para archivos `.csv`, `.tsv`.
 * **Análisis Descriptivo Automatizado:** Resumen global, análisis univariado y bivariado.
 * **Visualización Dinámica:** Generación de gráficos al instante seleccionando variables de menús desplegables.
 * **Sugerencia Inteligente de Gráficos:** La app recomienda el mejor tipo de gráfico basado en el tipo de dato (continuo, categórico, binario).
